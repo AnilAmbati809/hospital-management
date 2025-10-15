@@ -29,4 +29,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_branch: gh-pages        # branch to deploy
+          publish_dir: ./build            # change to ./dist if your build output is dist
+          user_name: github-actions       # optional
+          user_email: github-actions@github.com  # optional
