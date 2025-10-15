@@ -1,21 +1,37 @@
-name: Deploy Frontend (Windows)
+name: Frontend Deployment via GitHub Actions
 
 on:
   push:
     branches:
       - main  # deploy when pushing to main branch
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest  # run on Windows
+    runs-on: windows-latest  # or ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build  # generates ./dist folder (Vite default)
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./   # root folder containing your HTML/CSS/JS
-          publish_branch: gh-pages
+          github_token: ${{ secrets.GH_PAT }}   # PAT secret
+          publish_dir: ./dist                  # Vite build output
+          publish_branch: gh-pages             # branch to deploy
+          user_name: github-actions
+          user_email: github-actions@github.com
